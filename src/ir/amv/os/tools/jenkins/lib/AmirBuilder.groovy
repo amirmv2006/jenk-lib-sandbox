@@ -7,7 +7,11 @@ def execute(Map pipelineParams) {
 //    def slave = detectSlaveType(pipelineParams)
     node('') {
         stage('amir') {
-            detectSlaveType(pipelineParams)
+            withDockerContainer(image: 'maven:3-jdk-8') {
+                checkout scm
+                sh "mvn -B release:prepare"
+                sh "mvn -B release:perform"
+            }
         }
     }
 }
