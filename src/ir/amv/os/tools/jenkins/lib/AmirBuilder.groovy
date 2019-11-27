@@ -9,8 +9,12 @@ def execute(Map pipelineParams) {
         stage('amir') {
             withDockerContainer(image: 'maven:3-jdk-8') {
                 checkout scm
-                sh "mvn -B release:prepare"
-                sh "mvn -B release:perform"
+                withCredentials([string(credentialsId: 'GithubPass', variable: 'password')]) {
+                    sh 'git reset --hard'
+                    sh 'git config --global user.email "you@example.com"'
+                    sh 'git config --global user.name "Your Name"'
+                    sh 'mvn -B release:prepare release:perform -Dusername=amirmv2006 -Dpassword=$password'
+                }
             }
         }
     }
